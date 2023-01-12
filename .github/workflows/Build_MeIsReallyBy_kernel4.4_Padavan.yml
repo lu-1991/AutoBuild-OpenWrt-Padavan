@@ -1,4 +1,4 @@
-name: AutoBuild MeIsReallyBy's Kernel4.4 Padavan
+name: 云编译4.4内核的Padavan
 
 on:
   workflow_dispatch:
@@ -31,7 +31,7 @@ on:
       plugins:
         description: 'json format string of include configs'
         required: true
-        default: '{"cpu_overclock":"n","aria":"y","transmission":"n","vpnsvr":"n","vpncli":"n","vpncmd":"n","ss":"y","v2ray":"y","xray":"n","trojan":"y","ssobfs":"n","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"n","zerotier":"n","ddnsto":"n","wireguard":"n","aldriver":"n","sqm":"n","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
+        default: '{"cpu_overclock":"n","aria":"n","transmission":"n","vpnsvr":"n","vpncli":"n","vpncmd":"n","openvpn":"n","ss":"y","v2ray":"n","xray":"y","trojan":"y","ssobfs":"y","dnsforwarder":"n","adbyby":"n","adguardhome":"n","smartdns":"n","aliddns":"n","zerotier":"n","frpc":"n","frps":"n","ddnsto":"n","wireguard":"n","aldriver":"n","sqm":"n","mentohust":"n","scutclient":"n","njitclient":"n","minieap":"n","dogcom":"n"}'
       cpu_set:
         type: choice
         description: '1000Mhz=0x312 1100Mhz=0x362 1120Mhz=0x372 1200Mhz=0x3B2'
@@ -43,7 +43,7 @@ on:
       firmwarever:
         description: 'firmware''s version'
         required: true
-        default: '20221026'
+        default: '20230201'
       uploadwet:
         type: boolean
         description: 'upload firmware to wetransfer'
@@ -57,12 +57,12 @@ on:
         default: 'false'
 
 env:
-  REPOSITORY_URL: https://github.com/MeIsReallyBa/padavan-4.4.git
-  TOOLCHAIN_URL: https://github.com/hanwckf/padavan-toolchain/releases/download/linux-4.4-v1.0/mipsel-linux-uclibc.tar.xz
+  REPOSITORY_URL: https://github.com/yuos-bit/padavan-4.4.git
+  TOOLCHAIN_URL: https://github.com/yuos-bit/padavan-4.4/releases/download/2023.01.12/mipsel-linux-uclibc.tar.xz
   WORK_PATH: /opt/padavan-4.4
   TIME_ZONE: Asia/Shanghai
   FIRMWARE_DATEPREFIX: $(date +"%Y%m%d")
-  FIRMWARE_AUTHOR: MeIsReallyBa
+  FIRMWARE_AUTHOR: yuos-bit
   FIRMWARE_PATH: /opt/firmwares
 jobs:
   build:
@@ -96,6 +96,7 @@ jobs:
         echo "vpnsvr=${{fromJson(github.event.inputs.plugins).vpnsvr}}" >> $GITHUB_ENV
         echo "vpncli=${{fromJson(github.event.inputs.plugins).vpncli}}" >> $GITHUB_ENV
         echo "vpncmd=${{fromJson(github.event.inputs.plugins).vpncmd}}" >> $GITHUB_ENV
+        echo "openvpn=${{fromJson(github.event.inputs.plugins).openvpn}}" >> $GITHUB_ENV
         echo "ss=${{fromJson(github.event.inputs.plugins).ss}}" >> $GITHUB_ENV
         echo "v2ray=${{fromJson(github.event.inputs.plugins).v2ray}}" >> $GITHUB_ENV
         echo "xray=${{fromJson(github.event.inputs.plugins).xray}}" >> $GITHUB_ENV
@@ -107,6 +108,8 @@ jobs:
         echo "smartdns=${{fromJson(github.event.inputs.plugins).smartdns}}" >> $GITHUB_ENV
         echo "aliddns=${{fromJson(github.event.inputs.plugins).aliddns}}" >> $GITHUB_ENV
         echo "zerotier=${{fromJson(github.event.inputs.plugins).zerotier}}" >> $GITHUB_ENV
+        echo "frpc=${{fromJson(github.event.inputs.plugins).frpc}}" >> $GITHUB_ENV
+        echo "frps=${{fromJson(github.event.inputs.plugins).frps}}" >> $GITHUB_ENV
         echo "ddnsto=${{fromJson(github.event.inputs.plugins).ddnsto}}" >> $GITHUB_ENV
         echo "wireguard=${{fromJson(github.event.inputs.plugins).wireguard}}" >> $GITHUB_ENV
         echo "aldriver=${{fromJson(github.event.inputs.plugins).aldriver}}" >> $GITHUB_ENV
@@ -117,6 +120,8 @@ jobs:
         echo "minieap=${{fromJson(github.event.inputs.plugins).minieap}}" >> $GITHUB_ENV
         echo "dogcom=${{fromJson(github.event.inputs.plugins).dogcom}}" >> $GITHUB_ENV
         echo "cpu_overclock=${{fromJson(github.event.inputs.plugins).cpu_overclock}}" >> $GITHUB_ENV
+
+
     - name: Custom config
       run: |
         cd $WORK_PATH/trunk
@@ -164,6 +169,7 @@ jobs:
         echo "CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER=${{env.vpnsvr}}" >> .config #SOFTETHERVPN
         echo "CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT=${{env.vpncli}}" >> .config #SOFTETHERVPN
         echo "CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CMD=${{env.vpncmd}}" >> .config #SOFTETHERVPN
+        echo "CONFIG_FIRMWARE_INCLUDE_OPENVPN=${{env.openvpn}}" >> .config #OPENVPN
         #科学相关
         echo "CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS=${{env.ss}}" >> .config #SS plus+
         echo "CONFIG_FIRMWARE_INCLUDE_V2RAY=${{env.v2ray}}" >> .config #集成v2ray执行文件（3.8M左右)
@@ -189,6 +195,10 @@ jobs:
         echo "CONFIG_FIRMWARE_INCLUDE_ALDRIVER=${{env.aldriver}}" >> .config #阿里云盘
         echo "CONFIG_FIRMWARE_INCLUDE_SQM=${{env.sqm}}" >> .config #SQM
         #
+        # frp & frps
+        echo "CONFIG_FIRMWARE_INCLUDE_FRPC=${{env.frpc}}" >> .config #frp客户端
+        echo "CONFIG_FIRMWARE_INCLUDE_FRPS=${{env.frps}}" >> .config #frp服务端
+        # frp & frps
         #下载功能
         echo "CONFIG_FIRMWARE_INCLUDE_ARIA=${{env.aria}}" >> .config #配置项aria
         echo "CONFIG_FIRMWARE_INCLUDE_ARIA_WEB_CONTROL=${{env.aria}}" >> .config #配置项aria网页控制台

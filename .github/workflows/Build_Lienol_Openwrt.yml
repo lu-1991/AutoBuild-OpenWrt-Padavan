@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 # Modified for Lienol/openwrt
 
-name: Build_Lienol_openwrt
+name: 云编译Lienol的固件
 
 on:
   repository_dispatch:

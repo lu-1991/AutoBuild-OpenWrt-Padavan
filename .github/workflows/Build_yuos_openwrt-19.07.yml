@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 # Modified for lean/openwrt
 
-name: 云编译lean的固件
+name: 云编译适配19.07的小米路由器
 
 on:
   repository_dispatch:
@@ -17,13 +17,12 @@ on:
       model:
         description: '选择机型'
         required: true
-        default: 'G-Dock' 
+        default: 'miwifi-nano' 
         type: choice
         options:
-          - 'MI-R3G'
-          - 'G-Dock'
-          - 'G-Dock-Lite'
-          - 'K2P'
+          - 'miwifi-nano'
+          - 'miwifi-4c'
+          - 'miwifi-3a'
       UPLOAD_BIN_DIR:
         type: boolean
         description: '上传bin文件夹'
@@ -68,12 +67,12 @@ on:
   #   types: [started]                  # 点击 star 之后
   
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/yuos-bit/openwrt-19.07
+  REPO_BRANCH: xiaomi
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: config/Lean_${{ github.event.inputs.model }}.config
-  DIY_P1_SH: diy-part1.sh
-  DIY_P2_SH: diy-part3.sh
+  CONFIG_FILE: config/Yuos_${{ github.event.inputs.model }}.config
+  DIY_P1_SH: diy-part4.sh
+  DIY_P2_SH: diy-part5.sh
 #  UPLOAD_BIN_DIR: true
 #  UPLOAD_FIRMWARE: true
 #  UPLOAD_COWTRANSFER: false
@@ -94,12 +93,11 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         docker rmi `docker images -q`
-        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android
-        sudo -E apt-get -y purge azure-cli ghc* zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* adoptopenjdk* mysql* php* mongodb* dotnet* moby* snapd* || true
-        sudo -E apt-get update
-        sudo -E apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf swig
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get clean
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL dwurl.cn/rksAHq)
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir

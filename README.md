@@ -1,4 +1,4 @@
-# AutoBuild-OpenWrt-Padavan
+# 云编译-OpenWrt-Padavan
 
 - 定制.config文件：
 - 进入工作目录输入：./scripts/diffconfig.sh > diffconfig分离出定制的插件配置，
@@ -9,6 +9,20 @@
 - 内含供小米路由R3G、R3P、mini、nano等，竞斗云使用，基于 GitHub Actions CI 的自动化 ImmortalWrt Openwrt构建，使用 [padavanonly](https://github.com/padavanonly/immortalwrt)源码 、Linux 5.10 内核，以及开启了 [MTK SDK HWNAT](https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/) 支持；
 - 内含Padavan固件编译。
 - 其他机型云编译还在继续测试添加中……
+
+## 捐贈
+
+***
+<center><b>如果你觉得此项目对你有帮助，可以捐助我，用爱发电也挺难的，哈哈。</b></center>
+
+|  微信   | 支付宝  |
+|  ----  | ----  |
+| ![](https://pic.imgdb.cn/item/62502707239250f7c5b8ac3d.png) | ![](https://pic.imgdb.cn/item/62502707239250f7c5b8ac36.png) |
+
+## 赞助名单
+
+![](https://pic.imgdb.cn/item/625028c0239250f7c5bd102b.jpg)
+感谢以上大佬的充电！
 
 ## 本地编译基本操作
 - 首次编译
